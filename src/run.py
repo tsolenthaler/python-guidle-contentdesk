@@ -22,62 +22,29 @@ def load_json_url(url):
 
 # Transform Data to Akeneo Format
 def transform_data(data):
-    # Extract Data from JSON
-    id = data['id']
-    name = data['name']
-    description = data['description']
-    price = data['price']
-    image = data['image']
-
-    # Transform Data to Akeneo Format
-    akeneo_data = {
-        "identifier": id,
-        "enabled": True,
-        "family": "tshirts",
-        "groups": [],
-        "categories": [
-            "master_catalog"
-        ],
-        "values": {
-            "name": [
-                {
-                    "locale": None,
-                    "scope": None,
-                    "data": name
-                }
-            ],
-            "description": [
-                {
-                    "locale": None,
-                    "scope": None,
-                    "data": description
-                }
-            ],
-            "price": [
-                {
-                    "locale": None,
-                    "scope": None,
-                    "data": [
-                        {
-                            "amount": price,
-                            "currency": "USD"
-                        }
-                    ]
-                }
-            ],
-            "image": [
-                {
-                    "locale": None,
-                    "scope": None,
-                    "data": image
-                }
-            ]
-        }
-    }
-    return akeneo_data
+    # For each product in the feed
+    print (type(data))
+    for groupSet in data['groupSet']:
+        for offers in groupSet['offers']:
+            for offer in offers:
+                print (offer)
 
 # Load Data to Akeneo
 def load_data(akeneo_data):
     client = akeneo.Akeneo(AKENEO_HOST, AKENEO_CLIENT_ID, AKENEO_CLIENT_SECRET, AKENEO_USERNAME, AKENEO_PASSWORD)
     client.patchProducts(akeneo_data)
-    
+
+
+# Main Function
+def main():
+    # Load Data from JSON URL
+    data = load_json_url(GUIDLE_FEED_URL)
+
+    # Transform Data to Akeneo Format
+    transform_data(data)
+
+    # Load Data to Akeneo
+    #load_data(akeneo_data)
+
+if __name__ == "__main__":
+    main()
